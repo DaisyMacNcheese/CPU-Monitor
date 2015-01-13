@@ -11,6 +11,9 @@ import os
 import collections
 import psutil
 import time
+from flask import Flask
+from flask import request
+from flask import render_template
 
 _ntuple_diskusage = collections.namedtuple('usage', 'total used free')
 
@@ -32,6 +35,20 @@ def sizeof_fmt(num, suffix='B'):
         num /= 1000.0
     return "%.3f%s%s" % (num, 'Yi', suffix)
 
+def getCpuLoad():
+    psutil.cpu_percent()
+    time.sleep(2)
+    return (psutil.cpu_percent())
+
+def getMem():
+    return (psutil.phymem_usage().percent)
+
+def getDisk():
+    path = os.getcwd()
+    disku=disk_usage(path)
+    return(sizeof_fmt(disku.free))
+
+
 def dothings():
     path = os.getcwd()
     #print path
@@ -45,14 +62,43 @@ def dothings():
     print "CPU P usage", psutil.cpu_percent()
     print "Phys mem usage", psutil.phymem_usage().percent
     print "Virt mem usage", psutil.virtual_memory().percent
+    return()
+
+
+def dothings2():
+    cpu=getCpuLoad()
+    ram=getMem()
+    disk=getDisk()
+
+    print cpu,ram,disk
+
+
+    return()
+
+####seperating app from logic until files are split####
+
+app = Flask(__name__)
+
+@app.route("/",methods=['GET','POST'])
+def home():
+
+
+    cpu=getCpuLoad()
+    ram=getMem()
+    disk=getDisk()
+
+    #return jsonify(cpu=cpu, ram=ram, disk=disk)
+
+    return render_template('cpu.html',cpu=cpu, ram=ram, disk=disk)
 
 
 
+#disk_usage.__doc__ = __doc__
 
-disk_usage.__doc__ = __doc__
 
-if __name__ == '__main__':
-    dothings()
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
 
 
 
