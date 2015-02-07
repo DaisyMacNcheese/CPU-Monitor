@@ -14,6 +14,8 @@ import time
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask import jsonify
+from sh import uptime
 
 _ntuple_diskusage = collections.namedtuple('usage', 'total used free')
 
@@ -37,16 +39,21 @@ def sizeof_fmt(num, suffix='B'):
 
 def getCpuLoad():
     psutil.cpu_percent()
-    time.sleep(2)
+    time.sleep(.1)
     return (psutil.cpu_percent())
 
 def getMem():
     return (psutil.phymem_usage().percent)
 
-def getDisk():
-    path = os.getcwd()
+def getDisk(path):
+    #path = os.getcwd() #gets the current "working directory"
+    #path = '/Volumes/Macintosh HD'
     disku=disk_usage(path)
-    return(sizeof_fmt(disku.free))
+    diskinfo={'pathused' : path,
+                  'total': sizeof_fmt(disku.total),
+                  'used' : sizeof_fmt(disku.used),
+                'free' : sizeof_fmt(disku.free)}
+    return(diskinfo)
 
 
 def dothings():
@@ -66,30 +73,52 @@ def dothings():
 
 
 def dothings2():
-    cpu=getCpuLoad()
+    #cpu=getCpuLoad()
     ram=getMem()
-    disk=getDisk()
-
-    print cpu,ram,disk
+    disk=getDisk('/Volumes/Macintosh HD')
+    #disk2=getDisk('')
+    #print cpu
+    print ram
+    print disk
 
 
     return()
 
+#######################################################
 ####seperating app from logic until files are split####
+#######################################################
 
 app = Flask(__name__)
 
-@app.route("/",methods=['GET','POST'])
-def home():
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
+@app.route("/processor",methods=['GET','POST'])
+def processor():
     cpu=getCpuLoad()
-    ram=getMem()
-    disk=getDisk()
+    return jsonify(cpu=cpu)
 
-    #return jsonify(cpu=cpu, ram=ram, disk=disk)
+@app.route("/uptime")
+def howlong():
+    up=str(uptime())[7:23]
+    return jsonify(up=up)
 
-    return render_template('cpu.html',cpu=cpu, ram=ram, disk=disk)
+
+
+
+@app.route("/disk",methods=['GET','POST'])
+def diskpage():
+
+    alldisks=['/Volumes/Macintosh HD']
+
+    data=[]
+
+    for d in alldisks:
+        data.append(getDisk(d))
+
+    return render_template('disk.html',data=data)
 
 
 
@@ -97,6 +126,7 @@ def home():
 
 
 if __name__ == "__main__":
+    #dothings2()
     app.debug = True
     app.run()
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+    <h1>Hello<small> {{name}}!<small></h1>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+  </head>
+
+<body>
+<div class="container">
+
+
+
+<br><br>
+
+
+{% for r in data %}
+       <font size="3"> Path <b>{{ r['pathused'] }}</b> </font><br>
+       <font size="3"> Total Disk Size <b>{{ r['total'] }}</b> </font><br>
+       <font size="3"> Used Disk Space <b>{{ r['used'] }}</b> </font><br>
+       <font size="3"> Free Disk Space <b>{{ r['free'] }}</b> </font><br>
+<br><br>
+{% endfor %}
+
+<br><br><br>
+
+</div>
+
+
+</body>
+
+<div class="container">
+    <form class="form-horizontal" method="POST" action="{{ url_for('index') }}">
+        <div class="form-group">
+            <div class="col-xs-offset-0 col-xs-10">
+                <button type="submit" name={{'name'}} value={{name}} class="btn btn-primary">I WANT MOAR!</button>
+
+            </div>
+        </div>
+
+
+
+    </form>
+</div>
+
+
+
+</html>
