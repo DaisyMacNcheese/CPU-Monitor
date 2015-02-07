@@ -2,36 +2,51 @@
 {% block content %}
 
 
+<body>
+
+
+<!-- CPU Usage -->
+<div class="container">
+<br><br>
+
+<font size="3"><b><div id="echoResult"> CPU Usage: Updating</div></b> </font><br>
+<br><br>
+</div>
+
+<!-- Uptime -->
+<div class="container">
+
+
+<font size="3"><b>{{up2}}</b> </font><br>
+<br><br>
+</div>
+
+
+
+<!-- Hard drive -->
+<div class="container">
+
+<font size="4">  <b>Hard Drive Space</b> </font><br><br><br>
+
+{% for r in data %}
+       <font size="3"> Path <b>{{ r['pathused'] }}</b> </font><br>
+       <font size="3"> Total Disk Size <b>{{ r['total'] }}</b> </font><br>
+       <font size="3"> Used Disk Space <b>{{ r['used'] }}</b> </font><br>
+       <font size="3"> Free Disk Space <b>{{ r['free'] }}</b> </font><br>
+<br><br>
+{% endfor %}
+
+<br><br><br>
+
+</div>
+
+
+
 <!--
-
-<script type="text/javascript">
-  $(function() {
-    $("#submitBtn").click(function() {
-
-
-         $.ajax({
-            type: "GET",
-            url: $SCRIPT_ROOT + "/processor",
-            contentType: "application/json; charset=utf-8",
-            data: { echoValue: $('input[name="echoText"]').val() },
-            success: function(data) {
-                $('#echoResult').text(data.cpu);
-            }
-        });     
-
-
-
-    });
-  });
-</script>
-<strong>Enter a value to echo back:</strong>
-<input type="text" size="10" id="echoText" name="echoText">
-<button type="button" id="submitBtn" name="submitBtn">Submit via AJAX</button><br><br>
-
+###################
+Scripts Below
+###################
 -->
-<strong><div id="echoResult"></div></strong>
-
-
 
 <script language="JavaScript"> 
 setInterval( "updateMyContent();", 5000 ); 
@@ -45,21 +60,18 @@ $(function() {
             contentType: "application/json; charset=utf-8",
             data: { echoValue: $('input[name="echoText"]').val() },
             success: function(data) {
-                $('#echoResult').text(data.cpu);
+                $('#echoResult').text("CPU Usage: "+data.cpu+"%");
             }
         });     
-
-
-
-
 
 
        } 
 }); 
 </script>
-<strong><div id="refreshData"></div></strong>
 
 
 
 
+
+</body>
 {% endblock %}

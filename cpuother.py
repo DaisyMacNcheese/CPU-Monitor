@@ -16,6 +16,7 @@ from flask import request
 from flask import render_template
 from flask import jsonify
 from sh import uptime
+import re
 
 _ntuple_diskusage = collections.namedtuple('usage', 'total used free')
 
@@ -92,7 +93,18 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+
+    alldisks=['/Volumes/Macintosh HD']
+    data=[]
+    for d in alldisks:
+        data.append(getDisk(d))
+
+    up=str(uptime())
+    up=re.split(r'[,]*',up)
+    up2='Uptime is '+ up[0][10:]+up[1][:3]+' hours ' + up[1][-2:] + ' minutes'
+
+
+    return render_template('index.html',data=data,up2=up2)
 
 
 @app.route("/processor",methods=['GET','POST'])
@@ -100,12 +112,16 @@ def processor():
     cpu=getCpuLoad()
     return jsonify(cpu=cpu)
 
+'''
 @app.route("/uptime")
 def howlong():
-    up=str(uptime())[7:23]
-    return jsonify(up=up)
+    up=str(uptime())
+    up=re.split(r'[,]*',up)
+    print up
+    up2='Uptime is: '+ up[0][10:]+up[1][:3]+' hours ' + up[1][-2:] + ' minutes'
 
-
+    return jsonify(up2=up2)
+'''
 
 
 @app.route("/disk",methods=['GET','POST'])

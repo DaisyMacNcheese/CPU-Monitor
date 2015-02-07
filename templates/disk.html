@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
-  <head>
-    <h1>Hello<small> {{name}}!<small></h1>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
-  </head>
+{% extends "layout.html" %}
+{% block content %}
 
 <body>
+
+
+
 <div class="container">
-
-
-
 <br><br>
 
+<font size="4">  <b>Hard Drive Space</b> </font><br><br><br>
 
 {% for r in data %}
        <font size="3"> Path <b>{{ r['pathused'] }}</b> </font><br>
@@ -46,5 +40,5 @@
 </div>
 
 
+{% endblock %}
 
-</html>
